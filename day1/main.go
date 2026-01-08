@@ -24,15 +24,15 @@ func main() {
 	for scanner.Scan() {
 		line := scanner.Text()
 
-		// Direction is the first character
 		direction := line[0]
-
 		// Distance is everything after the first character
 		distanceStr := line[1:]
 		distance, err := strconv.Atoi(distanceStr)
 		if err != nil {
 			panic(err)
 		}
+
+		hits += countZeroHits(position, direction, distance)
 
 		// Move the "dial"
 		if direction == 'R' {
@@ -47,10 +47,6 @@ func main() {
 			position += 100
 		}
 
-		// Count hits of 0
-		if position == 0 {
-			hits++
-		}
 	}
 
 	// Check scanner for errors
@@ -59,4 +55,25 @@ func main() {
 	}
 
 	fmt.Println("Answer:", hits)
+}
+
+// Function to help part 2
+func countZeroHits(pos int, dir byte, dist int) int {
+	var first int
+
+	if dir == 'R' {
+		first = (100 - pos) % 100
+	} else { // L
+		first = pos % 100
+	}
+
+	if first == 0 {
+		first = 100
+	}
+
+	if dist < first {
+		return 0
+	}
+
+	return 1 + (dist-first)/100
 }
